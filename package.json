@@ -1,6 +1,6 @@
 {
   "name": "react-native-unrealspeech",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "An AirPressure component for react-native that displays the current air pressure",
   "keywords": [
     "react-native",
