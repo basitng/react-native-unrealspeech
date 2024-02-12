@@ -128,30 +128,123 @@ Returns: A promise that resolves to the synthesized speech data.
 This method streams the synthesized speech based on the provided parameters.
 
 ```javascript
-const buffer = await unrealSpeech.stream("Hello, world!");
-console.log(buffer);
+import { UnrealSpeech } from "react-native-unrealspeech";
+const unrealSpeech = new UnrealSpeech("your_api_key");
+
+const App = () => {
+  
+  const handlePress = async () => { 
+    const bitrate = "192k";
+    const speed = 0;
+    const pitch = 1.0;
+    const text = "Hello world";
+    const voiceId = "Will";
+    const timestampType = "word";
+    
+    const buffer = await unrealSpeech.stream(
+      	text,
+        voiceId,
+        bitrate,
+      	timestampType,
+        speed,
+        pitch,
+    );
+    console.log(buffer);
+  }
+  
+  return (
+    <Button onPress={handlePress} title="Press!"/>
+    
+    )
+}
+
 ```
 
 #### createSynthesisTask
 
 ```javascript
-const taskId = await unrealSpeech.createSynthesisTask("Hello, world!");
-console.log(taskId); // Use the ID of the created synthesis task as needed
+import { UnrealSpeech } from "react-native-unrealspeech";
+const unrealSpeech = new UnrealSpeech("your_api_key");
+
+const App = () => {
+  
+  const handlePress = async () => { 
+    const text = "Hello world";
+    const voice_id = "Scarlett";
+    const bitrate = "192k";
+    const timestampType = "word";
+    const speed = 0;
+    const pitch = 1.0;
+    
+   	 const taskId = await unrealSpeech.createSynthesisTask(text, voice_id, bitrate, timestampType, speed, pitch);
+			// Pass the ID of the created synthesis task to getSynthesisTaskStatus
+			console.log(taskId);
+  }
+  
+  return (
+    <Button onPress={handlePress} title="Press!"/>
+    
+    )
+}
+
 ```
 
 #### getSynthesisTaskStatus
 
 ```javascript
-const taskId = "task123"; // Replace with the actual task ID
-const status = await unrealSpeech.getSynthesisTaskStatus(taskId);
-console.log(status); // Use the status of the synthesis task as needed
+import { UnrealSpeech } from "react-native-unrealspeech";
+const unrealSpeech = new UnrealSpeech("your_api_key");
+
+const App = () => {
+  
+  const handlePress = async () => { 
+  	const taskId = "task123"; // Replace with the actual task ID
+		const status = await unrealSpeech.getSynthesisTaskStatus(taskId);
+		console.log(status);
+  }
+  
+  return (
+    <Button onPress={handlePress} title="Press!"/>
+    
+    )
+}
+
 ```
 
 #### speech
 
 ```javascript
-const speechData = await unrealSpeech.speech("Hello, world!");
-console.log(speechData); // Use the synthesized speech data as needed
+import { UnrealSpeech } from "react-native-unrealspeech";
+const unrealSpeech = new UnrealSpeech("your_api_key");
+
+const App = () => {
+  
+  const handlePress = async () => { 
+
+    const text = "Hello world";
+   	const voice = "Will";
+    const bitrate = "320k";
+    const timestampType = "sentence";
+    const speed = 0.5;
+    const pitch = 1.0;
+    
+  	const speechData = await speech(
+        text,
+        voice,
+        bitrate,
+        timestampType,
+        speed,
+        pitch
+      );
+		console.log(speechData); 
+  }
+  
+  return (
+    <Button onPress={handlePress} title="Press!"/>
+    
+    )
+}
+
 ```
 
 ## useUnrealSpeech Hook
@@ -176,7 +269,9 @@ import React from "react";
 import { Text, Button, View } from "react-native";
 import useUnrealSpeech from "react-native-unrealspeech";
 
-const App = () => {
+function App() {
+  const apiKey = "YOUR_API_KEY";
+
   const {
     createSynthesisTask,
     getSynthesisTaskStatus,
@@ -184,20 +279,108 @@ const App = () => {
     speech,
     status,
     requestState,
-  } = useUnrealSpeech("your-api-key");
+  } = useUnrealSpeech(apiKey);
 
+  // State variables
+  const [textToSynthesize, setTextToSynthesize] = useState("");
+  const [taskId, setTaskId] = useState("");
+  const [selectedVoice, setSelectedVoice] = useState("Scarlett"); // Default voice
+
+  // Function to create a synthesis task
+  const handleCreateTask = async () => {
+    try {
+      await createSynthesisTask(textToSynthesize, selectedVoice);
+      // Handle successful task creation
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  // Function to get task status
+  const handleGetTaskStatus = async () => {
+    try {
+      const taskStatus = await getSynthesisTaskStatus(taskId);
+      // Handle task status retrieval
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  // Function to stream audio
+  const handleStream = async () => {
+    try {
+      
+      const text = "Hello world";
+    	const voice = "Will";
+      const bitrate = "192k";
+      const timestampType = "word";
+      const speed = 0;
+      const pitch = 1.0;
+
+      const audioBlob = await stream(
+        text,
+        voice,
+        bitrate,
+        timestampType,
+        speed,
+        pitch
+      );
+			
+      console.log(audioBlob)
+    } catch (error) {
+			console.log(error)
+    }
+  };
+
+  // Function to generate speech
   const handleSpeech = async () => {
-    await createSynthesisTask("Hello, world!");
+    try {
+			const text = "Hello world";
+    	const voice = "Will";
+      const bitrate = "192k";
+      const timestampType = "word";
+      const speed = 0;
+      const pitch = 1.0;
+
+      const speechData = await speech(
+        text,
+        voice,
+        bitrate,
+        timestampType,
+        speed,
+        pitch
+      );
+
+      // Handle successful speech generation
+    } catch (error) {
+      // Handle error
+    }
   };
 
   return (
     <View>
-      <Button onPress={handleSpeech} title="Speak" />
-      {requestState === "loading" && <Text>Loading...</Text>}
-      {status && <Text>Status: {status}</Text>}
+      <Text>Unreal Speech Synthesis</Text>
+      <TextInput
+        placeholder="Enter text to synthesize"
+        value={textToSynthesize}
+        onChangeText={(text) => setTextToSynthesize(text)}
+      />
+      <TextInput
+        placeholder="Select voice (default: Scarlett)"
+        value={selectedVoice}
+        onChangeText={(voice) => setSelectedVoice(voice)}
+      />
+      <Button title="Create Synthesis Task" onPress={handleCreateTask} />
+      <Button title="Get Task Status" onPress={handleGetTaskStatus} />
+      <Button title="Stream Audio" onPress={handleStream} />
+      <Button title="Generate Speech" onPress={handleSpeech} />
+      <View>
+        <Text>Status: {status}</Text>
+        <Text>Request State: {requestState}</Text>
+      </View>
     </View>
   );
-};
+}
 
 export default App;
 ```
