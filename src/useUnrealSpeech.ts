@@ -11,10 +11,24 @@ const useUnrealSpeech = (apiKey: string) => {
   const [requestState, setRequestState] = useState<RequestState>("idle");
 
   const createSynthesisTask = useCallback(
-    async (text: string, voiceId: string = "Scarlett") => {
+    async (
+      text: string,
+      voiceId: string = "Scarlett",
+      bitrate: string = "192k",
+      speed: number = 0,
+      pitch: number = 1.0,
+      timestampType: string = "word"
+    ) => {
       setRequestState("loading");
       try {
-        const taskId = await unrealSpeech.createSynthesisTask(text, voiceId);
+        const taskId = await unrealSpeech.createSynthesisTask(
+          text,
+          voiceId,
+          bitrate,
+          timestampType,
+          speed,
+          pitch
+        );
         setStatus(taskId);
         setRequestState("success");
       } catch (error) {
@@ -52,8 +66,7 @@ const useUnrealSpeech = (apiKey: string) => {
       bitrate: string = "192k",
       speed: number = 0,
       pitch: number = 1.0,
-      codec: string = "libmp3lame",
-      temperature: number = 0.25
+      timestampType: string = "word"
     ): Promise<BlobResponse> => {
       setRequestState("loading");
       try {
@@ -61,10 +74,9 @@ const useUnrealSpeech = (apiKey: string) => {
           text,
           voiceId,
           bitrate,
+          timestampType,
           speed,
-          pitch,
-          codec,
-          temperature
+          pitch
         );
         setRequestState("success");
         return audioBuffer;
@@ -82,7 +94,9 @@ const useUnrealSpeech = (apiKey: string) => {
       text: string,
       voiceId: string = "Scarlett",
       bitrate: string = "320k",
-      timestampType: string = "sentence"
+      timestampType: string = "sentence",
+      speed: number = 0,
+      pitch: number = 1.0
     ): Promise<any> => {
       setRequestState("loading");
       try {
@@ -90,7 +104,9 @@ const useUnrealSpeech = (apiKey: string) => {
           text,
           voiceId,
           bitrate,
-          timestampType
+          timestampType,
+          speed,
+          pitch
         );
         setRequestState("success");
         return speechData;

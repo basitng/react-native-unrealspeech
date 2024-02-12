@@ -50,30 +50,30 @@ class UnrealSpeech {
     text: string,
     voiceId: string = "Scarlett",
     bitrate: string = "192k",
+    timestampType: string = "word",
     speed: number = 0,
-    pitch: number = 1.0,
-    codec: string = "libmp3lame",
-    temperature: number = 0.25
+    pitch: number = 1.0
   ): Promise<BlobResponse> {
     const url = `${this.base_url}/stream`;
     const payload = {
       Text: text,
       VoiceId: voiceId,
       Bitrate: bitrate,
+      TimestampType: timestampType,
       Speed: speed,
       Pitch: pitch,
-      Codec: codec,
-      Temperature: temperature,
     };
     const response = await this._makePostRequest(url, payload);
-    return response as unknown as BlobResponse; // Cast the response to BlobResponse type
+    return response as unknown as BlobResponse;
   }
 
   async createSynthesisTask(
     text: string,
     voiceId: string = "Scarlett",
     bitrate: string = "192k",
-    timestampType: string = "word"
+    timestampType: string = "word",
+    speed: number = 0,
+    pitch: number = 1.0
   ): Promise<string> {
     const url = `${this.base_url}/synthesisTasks`;
     const payload = {
@@ -81,6 +81,8 @@ class UnrealSpeech {
       VoiceId: voiceId,
       Bitrate: bitrate,
       TimestampType: timestampType,
+      Speed: speed,
+      Pitch: pitch,
     };
     const response = await this._makePostRequest(url, payload);
     const data = (await response.json()) as ISynthesisTaskResponse;
@@ -115,15 +117,18 @@ class UnrealSpeech {
     text: string,
     voiceId: string = "Scarlett",
     bitrate: string = "320k",
-    timestampType: string = "sentence"
+    timestampType: string = "sentence",
+    speed: number = 0,
+    pitch: number = 1.0
   ): Promise<any> {
     const url = `${this.base_url}/speech`;
     const payload = {
       Text: text,
       VoiceId: voiceId,
       Bitrate: bitrate,
-      OutputFormat: "uri",
       TimestampType: timestampType,
+      Speed: speed,
+      Pitch: pitch,
     };
     const response = await this._makePostRequest(url, payload);
     return response.json();
